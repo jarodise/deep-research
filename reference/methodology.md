@@ -63,55 +63,16 @@ Before launching searches, decompose the research question into 5-10 independent
 ### Parallel Execution Protocol
 
 **Step 1: Launch ALL searches concurrently (single message)**
+Launch 5-10 independent searches based on your topic decomposition. See `SKILL.md` for specific tool syntax.
 
-**CRITICAL: Use correct tool and parameters to avoid errors**
+**Step 2: Follow up on promising leads**
 
-Choose ONE search approach per research session:
+After initial search results arrive:
+- Deep-dive into 3-5 most promising URLs with WebFetch
+- Follow citation trails from high-quality sources
+- Search for specific data points that initial results surface
 
-**Option A: Use WebSearch (built-in, no MCP required)**
-- Standard web search with simple query string
-- Parameters: `query` (required)
-- Optional: `allowed_domains`, `blocked_domains`
-- Example: `WebSearch(query="quantum computing 2025")`
-
-**Option B: Use Exa MCP (if available, more powerful)**
-- Advanced semantic + keyword search
-- Tool name: `mcp__Exa__exa_search`
-- Parameters: `query` (required), `type` (auto/neural/keyword), `num_results`, `start_published_date`, `include_domains`
-- Example: `mcp__Exa__exa_search(query="quantum computing", type="neural", num_results=10)`
-
-**NEVER mix parameter styles** - this causes "Invalid tool parameters" errors.
-
-**Step 2: Spawn parallel deep-dive agents**
-
-Use Task tool with general-purpose agents (3-5 agents) for:
-- Academic paper analysis (PDFs, detailed extraction)
-- Documentation deep dives (technical specs, API docs)
-- Repository analysis (code examples, implementations)
-- Specialized domain research (requires multi-step investigation)
-
-**Example parallel execution (using WebSearch):**
-```
-[Single message with multiple tool calls]
-- WebSearch(query="quantum computing 2025 state of the art")
-- WebSearch(query="quantum computing limitations challenges")
-- WebSearch(query="quantum computing commercial applications 2024-2025")
-- WebSearch(query="quantum computing vs classical comparison")
-- WebSearch(query="quantum error correction research", allowed_domains=["arxiv.org", "scholar.google.com"])
-- Task(subagent_type="general-purpose", description="Analyze quantum computing papers", prompt="Deep dive into quantum computing academic papers from 2024-2025, extract key findings and methodologies")
-- Task(subagent_type="general-purpose", description="Industry analysis", prompt="Analyze quantum computing industry reports and market data, identify commercial applications")
-- Task(subagent_type="general-purpose", description="Technical challenges", prompt="Extract technical limitations and challenges from quantum computing research")
-```
-
-**Example parallel execution (using Exa MCP - if available):**
-```
-[Single message with multiple tool calls]
-- mcp__Exa__exa_search(query="quantum computing state of the art", type="neural", num_results=10, start_published_date="2024-01-01")
-- mcp__Exa__exa_search(query="quantum computing limitations", type="keyword", num_results=10)
-- mcp__Exa__exa_search(query="quantum computing commercial", type="auto", num_results=10, start_published_date="2024-01-01")
-- mcp__Exa__exa_search(query="quantum error correction", type="neural", num_results=10, include_domains=["arxiv.org"])
-- Task(subagent_type="general-purpose", description="Academic analysis", prompt="Analyze quantum computing academic papers")
-```
+Then follow up with targeted searches based on what emerges.
 
 **Step 3: Collect and organize results**
 
@@ -146,17 +107,16 @@ As results arrive:
 - Geographic diversity (not just US sources)
 
 **Credibility tracking:**
-- Score each source 0-100 using source_evaluator.py
+- Score each source 0-100 (domain authority, recency, expertise, bias)
 - Flag low-credibility sources (<40) for additional verification
 - Prioritize high-credibility sources (>80) for core claims
 
 **Techniques:**
 - Use WebSearch for current information (primary tool)
 - Use WebFetch for deep dives into specific sources (secondary)
-- Use Exa search (via WebSearch with type="neural") for semantic exploration
+- Use Exa search (via MCP if available) for semantic exploration
 - Use Grep/Read for local documentation
 - Execute code for computational analysis (when needed)
-- Use Task tool to spawn parallel retrieval agents (3-5 agents)
 
 **Output:** Organized information repository with source tracking, credibility scores, and coverage map
 
@@ -358,13 +318,13 @@ Rather than linear thinking, branch into multiple reasoning paths:
 - Merge insights from different branches
 - Backtrack and revise as new information emerges
 
-### Parallel Agent Deployment
+### Sequential Deep-Dive Strategy
 
-Use Task tool to spawn sub-agents for:
-- Parallel source retrieval
-- Independent verification paths
-- Competing hypothesis evaluation
-- Specialized domain analysis
+When a topic requires deeper investigation:
+- Follow citation trails from high-quality initial sources
+- Use WebFetch to extract full content from promising URLs
+- Run additional targeted searches based on gaps identified
+- Iterate until quality threshold is met
 
 ### Adaptive Depth Control
 
