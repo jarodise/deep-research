@@ -52,7 +52,7 @@ I'll conduct deep research on this topic. Which mode would you like?
 
 ## Step 3: Search Execution (Phase 3)
 
-**Launch ALL searches in a single message with multiple tool calls — NOT sequentially.**
+**Launch ALL initial searches in a single message with multiple tool calls using `run_command` — NOT sequentially.**
 
 Decompose the query into 5-10 independent search angles:
 1. Core topic (semantic search)
@@ -64,11 +64,13 @@ Decompose the query into 5-10 independent search angles:
 7. Industry analysis
 8. Limitations and failure modes
 
-**Choose ONE search tool per session:**
-- **WebSearch** (built-in): `WebSearch(query="...")`
-- **Exa MCP** (if available): `mcp__Exa__exa_search(query="...", type="neural", num_results=10)`
+**Use the doko-search tool via `run_command`:**
+Execute searches through your local Chrome browser to get free, unlimited results. URL-encode the queries (replace spaces with `+`).
+- **Google Search (Default)**: `dokobot read --local 'https://www.google.com/search?q=...'`
+- **Specific Sites**: `dokobot read --local 'https://www.google.com/search?q=site%3Agithub.com+...'`
+- **Recent Results**: `dokobot read --local 'https://www.google.com/search?q=...&tbs=qdr:y'`
 
-**Never mix parameter styles between tools — causes errors.**
+*Note: After reading the search engine result pages, extract the most relevant URLs and read them individually using the same `dokobot read --local '<URL>'` command.*
 
 **Quality gate — proceed to next phase when FIRST threshold reached:**
 - Quick: 10+ sources, avg credibility >60
